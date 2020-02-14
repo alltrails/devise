@@ -480,8 +480,12 @@ module Devise
         warden_config.serialize_from_session(mapping.name) do |args|
           # Previous versions contained an additional entry at the beginning of
           # key with the record's class name.
-          args = args[-2, 2] rescue args
-          mapping.to.serialize_from_session(*args)
+          begin
+            args = args[-2, 2]
+            mapping.to.serialize_from_session(*args)
+          rescue
+            mapping.to.serialize_from_session(*args)
+          end
         end
       end
 
